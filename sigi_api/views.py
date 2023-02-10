@@ -25,7 +25,6 @@ headers = {
             'Cookie': cookie
 }
 
-
 def CheckValues(serializer):
     if not serializer.is_valid():
         raise ValidationError(serializer.errors)
@@ -40,9 +39,6 @@ def CheckValues(serializer):
         else ("Integration code cannot be empty", False)
     )
     
-
-
-
 
 class ValidationView(GenericAPIView):
     """
@@ -59,27 +55,19 @@ class ValidationView(GenericAPIView):
 
         if not status:
             return Response({"Response":{"message" :"", "status":"Failed"}}, status=status.HTTP_400_BAD_REQUEST)
-
-        print("Information is verified.")
-
-
         data    = serializer.validated_data
         payload = {
                     "payment_number": data["payment_number"],
                     "integration_code": integration_code
                 }
-
         try:
             response = requests.request("POST", self.url, headers=headers, data=json.dumps(payload))
-            print(f"The url {self.url} went through.")
             if response.status_code != 200:
                 return Response({"Response":{"message": "An error occurred while connecting to ****","status":"Failed"}} , status=status.HTTP_400_BAD_REQUEST)
             res = response.json()
         except Exception:
             return Response({"Response":{"message": "An error occurred while connecting to ****","status":"Failed"}} , status=status.HTTP_400_BAD_REQUEST)
-
         # VAS requirement
-
         print({
             "vendor_url": self.url,
             "res": str(res) or None,
@@ -87,11 +75,8 @@ class ValidationView(GenericAPIView):
             "vas_url": str(request.path),
 
         }, file=sys.stdout)
-        
         return Response({"Response":{"message":res,"status":"Success"}})
         
-        
-
 class PaymentView(GenericAPIView):
     # permission_classes = (IsAuthenticated, )
     
@@ -116,20 +101,16 @@ class PaymentView(GenericAPIView):
                     "payment_amount"        : request.data.get("payment_amount"),
                     "payment_description"   : request.data.get("payment_description")
         }
-
         try:
             response = requests.request("POST", self.url, headers=headers, data=json.dumps(payload))
-            print("Payment processing")
             res = response.json()
             try:
                 if res["status"] != "P":
                     print(res)
                     return Response({"Response":{"message": res["status"],"status":"Failed"}} )
             except Exception as e:
-                print(str(e.args[0]))
                 return Response({"Response":{"message": "Status not available. Check host connection","status":"Failed"}} )
         except Exception as e:
-            print(e.args[0])
             return  Response({"Response":{"message":"Unable to make payment for now ", "status":"Failed"}})
 
         print({
