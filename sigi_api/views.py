@@ -63,7 +63,7 @@ class ValidationView(GenericAPIView):
         try:
             response = requests.request("POST", self.url, headers=headers, data=json.dumps(payload))
             if response.status_code != 200:
-                return Response({"Response":{"message": "We cannot establish connection","status":"Failed"}} , status=status.HTTP_400_BAD_REQUEST)
+                return Response({"Response":{"message": "We cannot establish connection to the host","status":"Failed"}} , status=status.HTTP_400_BAD_REQUEST)
             res = response.json()
         except Exception:
             return Response({"Response":{"message": "An error in connection","status":"Failed"}} )
