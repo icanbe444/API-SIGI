@@ -54,7 +54,7 @@ class ValidationView(GenericAPIView):
         status = CheckValues(serializer)
 
         if not status:
-            return Response({"Response":{"message" :"", "status":"Failed"}}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Response":{"message" :"Invalide status", "status":"Failed"}}, status=status.HTTP_400_BAD_REQUEST)
         data    = serializer.validated_data
         payload = {
                     "payment_number": data["payment_number"],
@@ -63,10 +63,10 @@ class ValidationView(GenericAPIView):
         try:
             response = requests.request("POST", self.url, headers=headers, data=json.dumps(payload))
             if response.status_code != 200:
-                return Response({"Response":{"message": "An error occurred while connecting to ****","status":"Failed"}} , status=status.HTTP_400_BAD_REQUEST)
+                return Response({"Response":{"message": "We cannot establish connection","status":"Failed"}} , status=status.HTTP_400_BAD_REQUEST)
             res = response.json()
         except Exception:
-            return Response({"Response":{"message": "An error occurred while connecting to ****","status":"Failed"}} , status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Response":{"message": "An error in connection","status":"Failed"}} )
         # VAS requirement
         print({
             "vendor_url": self.url,
