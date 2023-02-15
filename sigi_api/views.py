@@ -54,7 +54,7 @@ class ValidationView(GenericAPIView):
         status = CheckValues(serializer)
 
         if not status:
-            return Response({"Response":{"message" :"Invalid status", "status":"Failed"}}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Response":{"messsage" :"Invalid status", "status":"Failed"}}, status=status.HTTP_400_BAD_REQUEST)
         data    = serializer.validated_data
         payload = {
                     "payment_number": data["payment_number"],
